@@ -1,7 +1,8 @@
 const { DataTypes } = require('sequelize');
-const sequelize = require('../config/geral_database');
+const { geralDB } = require('../config/databases'); 
+const Usuario = require('../models/usuario');
 
-const Amizade = sequelize.define('Amizade', {
+const Amizade = geralDB.define('Amizade', {
   id_usuario1: {
     type: DataTypes.INTEGER,
     primaryKey: true,
@@ -18,5 +19,8 @@ const Amizade = sequelize.define('Amizade', {
   tableName: 'amizade',
   timestamps: false,
 });
+
+Amizade.belongsTo(Usuario, { foreignKey: 'id_usuario1' });
+Amizade.belongsTo(Usuario, { foreignKey: 'id_usuario2' });
 
 module.exports = Amizade;

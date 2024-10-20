@@ -3,6 +3,7 @@ const { loginDB, jogosDB, geralDB } = require('./config/databases');
 const planoRoutes = require('./routes/planoRoutes');
 const usuarioRoutes = require('./routes/usuarioRoutes');
 const jogoRoutes = require('./routes/jogoRoutes');
+const amizadeRoutes = require('./routes/amizadeRoutes');
 
 const app = express();
 app.use(express.json());
@@ -26,6 +27,7 @@ testConnections();
 app.use('/planos', planoRoutes);
 app.use('/usuarios', usuarioRoutes);
 app.use('/jogos', jogoRoutes);
+app.use('/amizades', amizadeRoutes);
 
 const PORT = 3000;
 app.listen(PORT, () => {

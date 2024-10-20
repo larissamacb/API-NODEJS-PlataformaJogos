@@ -1,6 +1,6 @@
 const { DataTypes } = require('sequelize');
 const { jogosDB } = require('../config/databases');
-const Jogo = require('./jogo');
+const Jogo = require('../models/jogo');
 
 const MidiaJogo = jogosDB.define('Midia_Jogo', {
   id: {
