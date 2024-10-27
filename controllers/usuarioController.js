@@ -24,8 +24,6 @@ exports.criarUsuario = async (req, res) => {
     }
 };
 
-
-// Controlador para consultar usuário pelo identificador
 exports.consultarUsuario = async (req, res) => {
   const { identificador } = req.params;
 
@@ -43,7 +41,6 @@ exports.consultarUsuario = async (req, res) => {
   }
 };
 
-// Controlador para login do usuário
 exports.loginUsuario = async (req, res) => {
   const { identificador, senha } = req.body;
 
@@ -67,7 +64,6 @@ exports.loginUsuario = async (req, res) => {
   }
 };
 
-// Controlador para atualizar informações do usuário
 exports.atualizarUsuario = async (req, res) => {
   const { identificador } = req.params;
   const { nome, novoIdentificador, email, data_nascimento, id_foto_perfil } = req.body;
@@ -94,7 +90,6 @@ exports.atualizarUsuario = async (req, res) => {
   }
 };
 
-// Controlador para alterar a senha do usuário
 exports.atualizarSenha = async (req, res) => {
   const { identificador } = req.params;
   const { senhaAtual, novaSenha } = req.body;
@@ -124,7 +119,6 @@ exports.atualizarSenha = async (req, res) => {
   }
 };
 
-// Controlador para deletar um usuário
 exports.deletarUsuario = async (req, res) => {
   const { identificador } = req.params;
   const { senha } = req.body;
