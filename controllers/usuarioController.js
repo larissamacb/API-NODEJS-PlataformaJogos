@@ -14,7 +14,7 @@ exports.criarUsuario = async (req, res) => {
             email,
             data_nascimento,
             id_plano: 1, // padrão
-            id_foto_perfil: 1 // padrão
+            id_foto_perfil: 4 // padrão
         });
 
         res.status(201).json({ message: "Usuário criado com sucesso!", usuario });
@@ -25,10 +25,10 @@ exports.criarUsuario = async (req, res) => {
 };
 
 exports.consultarUsuario = async (req, res) => {
-  const { identificador } = req.params;
+  const { id } = req.params;
 
   try {
-    const usuario = await Usuario.findOne({ where: { identificador } });
+    const usuario = await Usuario.findOne({ where: { id } });
 
     if (!usuario) {
       return res.status(404).json({ message: 'Usuário não encontrado' });
@@ -42,10 +42,10 @@ exports.consultarUsuario = async (req, res) => {
 };
 
 exports.loginUsuario = async (req, res) => {
-  const { identificador, senha } = req.body;
+  const { id, senha } = req.body;
 
   try {
-    const usuario = await Usuario.findOne({ where: { identificador } });
+    const usuario = await Usuario.findOne({ where: { id } });
 
     if (!usuario) {
       return res.status(404).json({ message: 'Usuário não encontrado' });
@@ -65,11 +65,11 @@ exports.loginUsuario = async (req, res) => {
 };
 
 exports.atualizarUsuario = async (req, res) => {
-  const { identificador } = req.params;
+  const { id } = req.params;
   const { nome, novoIdentificador, email, data_nascimento, id_foto_perfil } = req.body;
 
   try {
-    const usuario = await Usuario.findOne({ where: { identificador } });
+    const usuario = await Usuario.findOne({ where: { id } });
 
     if (!usuario) {
       return res.status(404).json({ message: 'Usuário não encontrado' });
@@ -91,11 +91,11 @@ exports.atualizarUsuario = async (req, res) => {
 };
 
 exports.atualizarSenha = async (req, res) => {
-  const { identificador } = req.params;
+  const { id } = req.params;
   const { senhaAtual, novaSenha } = req.body;
 
   try {
-    const usuario = await Usuario.findOne({ where: { identificador } });
+    const usuario = await Usuario.findOne({ where: { id } });
 
     if (!usuario) {
       return res.status(404).json({ message: 'Usuário não encontrado' });
@@ -120,11 +120,11 @@ exports.atualizarSenha = async (req, res) => {
 };
 
 exports.deletarUsuario = async (req, res) => {
-  const { identificador } = req.params;
+  const { id } = req.params;
   const { senha } = req.body;
 
   try {
-    const usuario = await Usuario.findOne({ where: { identificador } });
+    const usuario = await Usuario.findOne({ where: { id } });
 
     if (!usuario) {
       return res.status(404).json({ message: 'Usuário não encontrado' });

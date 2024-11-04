@@ -1,6 +1,7 @@
 const { DataTypes } = require('sequelize');
 const { loginDB } = require('../config/databases');
 const FotoPerfil = require('./fotoPerfil');
+const Plano = require('./plano')
 
 const Usuario = loginDB.define('Usuario', {
   id: {
@@ -47,5 +48,6 @@ const Usuario = loginDB.define('Usuario', {
 });
 
 Usuario.belongsTo(FotoPerfil, { foreignKey: 'id_foto_perfil' });
+Usuario.belongsTo(Plano, { foreignKey: 'id_plano' });
 
 module.exports = Usuario;

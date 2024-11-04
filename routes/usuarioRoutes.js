@@ -24,7 +24,7 @@ router.post('/', usuarioController.criarUsuario);
 router.post('/login', usuarioController.loginUsuario);
 
 // Rota para consultar um usuário pelo identificador (username)
-router.get('/:identificador', usuarioController.consultarUsuario);
+router.get('/:id', usuarioController.consultarUsuario);
 
 /* Rota para atualizar informações do usuário 
 (nome, identificador, email, data de nascimento, foto de perfil)
@@ -37,7 +37,7 @@ Exemplo:
     "id_foto_perfil": 2
 }
 */
-router.put('/:identificador', usuarioController.atualizarUsuario);
+router.put('/:id', usuarioController.atualizarUsuario);
 
 /* Rota específica para atualizar a senha do usuário
 Exemplo:
@@ -46,7 +46,7 @@ Exemplo:
   "novaSenha": "larissinha1"
 }
 */
-router.put('/:identificador/senha', usuarioController.atualizarSenha);
+router.put('/:id/senha', usuarioController.atualizarSenha);
 
 /* Rota para deletar um usuário (com verificação de senha)
 Exemplo:
@@ -54,6 +54,6 @@ Exemplo:
   "senha": "larissinha1"
 }
 */
-router.delete('/:identificador', usuarioController.deletarUsuario);
+router.delete('/:id', usuarioController.deletarUsuario);
 
 module.exports = router;

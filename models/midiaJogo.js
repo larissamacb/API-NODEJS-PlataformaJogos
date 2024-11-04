@@ -22,8 +22,8 @@ const MidiaJogo = jogosDB.define('Midia_Jogo', {
       isIn: [['foto', 'video']],
     },
   },
-  url: {
-    type: DataTypes.TEXT,
+  filedata: {
+    type: DataTypes.BLOB,
     allowNull: false,
   },
 }, {

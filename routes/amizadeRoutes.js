@@ -3,7 +3,7 @@ const router = express.Router();
 const amizadeController = require('../controllers/amizadeController');
 
 // Busca todas as amizades de um usuário a partir de seu identificador
-router.get('/:identificador', amizadeController.getAllAmizades);
+router.get('/:id', amizadeController.getAllAmizades);
 
 /* Busca todas as solicitações de amizade pendentes de um usuário pelo id do 
 usuário, retornando id da solicitação, id, nome, identificador e foto de perfil

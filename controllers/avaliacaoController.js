@@ -1,9 +1,9 @@
 const Avaliacao = require('../models/avaliacao');
 const Usuario = require('../models/usuario');
 const FotoPerfil = require('../models/fotoPerfil');
+const Jogo = require('../models/jogo');
 
 const { Op } = require('sequelize');
-const { jogosDB } = require('../config/databases');
 
 exports.getAllAvaliacoesByJogoId = async (req, res) => {
   const { id } = req.params;
@@ -58,21 +58,52 @@ exports.getAvaliacoesByUsuarioId = async (req, res) => {
   const { id } = req.params;
 
   try {
-      const avaliacoes = await Avaliacao.findAll({
-          where: {
-              id_usuario: id
-          },
-          attributes: ['id', 'id_usuario', 'id_jogo', 'nota', 'comentario', 'data_avaliacao', 'hora_avaliacao']
-      });
+    // Busca as avaliações do usuário e inclui o nome do jogo
+    const avaliacoes = await Avaliacao.findAll({
+      where: {
+        id_usuario: id
+      },
+      attributes: ['id', 'nota', 'comentario', 'data_avaliacao', 'hora_avaliacao'],
+      include: [
+        {
+          model: Jogo,
+          attributes: ['nome'], // Nome do jogo
+        }
+      ]
+    });
 
-      if (avaliacoes.length === 0) {
-          return res.status(404).json({ message: 'Nenhuma avaliação encontrada para este usuário.' });
-      }
+    if (avaliacoes.length === 0) {
+      return res.status(404).json({ message: 'Nenhuma avaliação encontrada para este usuário.' });
+    }
 
-      res.status(200).json(avaliacoes);
+    // Busca o nome e o identificador do usuário no banco loginDB
+    const usuario = await Usuario.findOne({
+      where: {
+        id: id
+      },
+      attributes: ['nome', 'identificador'] // Nome e identificador do usuário
+    });
+
+    if (!usuario) {
+      return res.status(404).json({ message: 'Usuário não encontrado.' });
+    }
+
+    // Formata a resposta incluindo o nome do jogo e os dados do usuário
+    const avaliacoesComNomes = avaliacoes.map(avaliacao => ({
+      id: avaliacao.id,
+      nome_usuario: usuario.nome,
+      identificador_usuario: usuario.identificador,
+      nome_jogo: avaliacao.Jogo.nome,
+      nota: avaliacao.nota,
+      comentario: avaliacao.comentario,
+      data_avaliacao: avaliacao.data_avaliacao,
+      hora_avaliacao: avaliacao.hora_avaliacao
+    }));
+
+    res.status(200).json(avaliacoesComNomes);
   } catch (error) {
-      console.error("Erro ao buscar avaliações:", error);
-      res.status(500).json({ message: 'Erro ao buscar avaliações', error: error.message });
+    console.error("Erro ao buscar avaliações:", error);
+    res.status(500).json({ message: 'Erro ao buscar avaliações', error: error.message });
   }
 };
 

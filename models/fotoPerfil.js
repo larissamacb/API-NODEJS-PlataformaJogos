@@ -7,8 +7,8 @@ const FotoPerfil = loginDB.define('Foto_Perfil', {
     primaryKey: true,
     autoIncrement: true,
   },
-  url: {
-    type: DataTypes.TEXT,
+  filedata: {
+    type: DataTypes.BLOB,
     allowNull: false,
   },
   tipo: {

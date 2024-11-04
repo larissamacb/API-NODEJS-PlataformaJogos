@@ -6,10 +6,10 @@ const SolicitacaoAmizade = require('../models/solicitacaoAmizade');
 const { Op } = require('sequelize');
 
 exports.getAllAmizades = async (req, res) => {
-  const { identificador } = req.params;
+  const { id } = req.params;
 
   try {
-    const usuario = await Usuario.findOne({ where: { identificador } });
+    const usuario = await Usuario.findOne({ where: { id } });
 
     if (!usuario) {
       return res.status(404).json({ message: 'Usuário não encontrado' });
@@ -43,17 +43,7 @@ exports.getAllAmizades = async (req, res) => {
       return res.status(404).json({ message: 'Amigos não encontrados' });
     }
 
-    const amigosComFotos = await Promise.all(amigos.map(async (amigo) => {
-      const fotoPerfil = await FotoPerfil.findByPk(amigo.id_foto_perfil);
-      return {
-        id: amigo.id,
-        nome: amigo.nome,
-        identificador: amigo.identificador,
-        foto_perfil: fotoPerfil ? fotoPerfil.url : null
-      };
-    }));
-
-    res.status(200).json(amigosComFotos);
+    res.status(200).json(amigos);
     
   } catch (error) {
     console.error(error);

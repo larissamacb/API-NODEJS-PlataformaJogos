@@ -5,8 +5,12 @@ const usuarioRoutes = require('./routes/usuarioRoutes');
 const jogoRoutes = require('./routes/jogoRoutes');
 const amizadeRoutes = require('./routes/amizadeRoutes');
 const avaliacaoRoutes = require('./routes/avaliacaoRoutes');
+const fotoPerfilRoutes = require('./routes/fotoPerfilRoutes');
 
+const cors = require('cors')
 const app = express();
+
+app.use(cors());
 app.use(express.json());
 
 async function testConnections() {
@@ -30,6 +34,7 @@ app.use('/usuarios', usuarioRoutes);
 app.use('/jogos', jogoRoutes);
 app.use('/amizades', amizadeRoutes);
 app.use('/avaliacoes', avaliacaoRoutes);
+app.use('/fotosdeperfil', fotoPerfilRoutes);
 
 const PORT = 3000;
 app.listen(PORT, () => {
