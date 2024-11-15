@@ -1,7 +1,7 @@
 const { DataTypes } = require('sequelize');
-const sequelize = require('../config/geral_database');
+const { geralDB } = require('../config/databases');
 
-const TipoPagamento = sequelize.define('TipoPagamento', {
+const TipoPagamento = geralDB.define('TipoPagamento', {
   id: {
     type: DataTypes.INTEGER,
     primaryKey: true,

@@ -32,9 +32,7 @@ Exemplo:
 {
     "nome": "larissa maciel",
     "identificador": "aliras",
-    "email": "larissa@gmail.com",
-    "data_nascimento": "2005-03-01",
-    "id_foto_perfil": 2
+    "email": "larissa@gmail.com"
 }
 */
 router.put('/:id', usuarioController.atualizarUsuario);

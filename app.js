@@ -6,6 +6,9 @@ const jogoRoutes = require('./routes/jogoRoutes');
 const amizadeRoutes = require('./routes/amizadeRoutes');
 const avaliacaoRoutes = require('./routes/avaliacaoRoutes');
 const fotoPerfilRoutes = require('./routes/fotoPerfilRoutes');
+const pagamentoRoutes = require('./routes/pagamentoRoutes');
+const midiaJogoRoutes = require('./routes/midiaJogoRoutes');
+const dispositivoRoutes = require('./routes/dispositivoRoutes');
 
 const cors = require('cors')
 const app = express();
@@ -35,6 +38,9 @@ app.use('/jogos', jogoRoutes);
 app.use('/amizades', amizadeRoutes);
 app.use('/avaliacoes', avaliacaoRoutes);
 app.use('/fotosdeperfil', fotoPerfilRoutes);
+app.use('/pagamentos', pagamentoRoutes);
+app.use('/midias', midiaJogoRoutes)
+app.use('/dispositivos', dispositivoRoutes)
 
 const PORT = 3000;
 app.listen(PORT, () => {

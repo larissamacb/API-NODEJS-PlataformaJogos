@@ -1,6 +1,9 @@
 const Plano = require('../models/plano');
 const JogoPlano = require('../models/jogoPlano');
 const InfoJogos = require('../models/viewInfoJogos');
+const Jogo = require('../models/jogo');
+const Usuario = require('../models/usuario');
+const JogoFavorito = require('../models/jogoFavorito');
 
 const { Op } = require('sequelize');
 const { jogosDB } = require('../config/databases');
@@ -128,5 +131,66 @@ exports.getJogosByPlano = async (req, res) => {
   } catch (error) {
     console.error('Erro ao buscar jogos por plano:', error);
     res.status(500).json({ message: 'Erro ao buscar jogos por plano', error: error.message });
+  }
+};
+
+exports.adicionarFavorito = async (req, res) => {
+  const { id_usuario, id_jogo } = req.body;
+
+  try {
+    const usuario = await Usuario.findByPk(id_usuario);
+    const jogo = await Jogo.findByPk(id_jogo);
+
+    if (!usuario) {
+      return res.status(404).json({ error: 'Usuário não encontrado.' });
+    }
+
+    if (!jogo) {
+      return res.status(404).json({ error: 'Jogo não encontrado.' });
+    }
+
+    const jogoFavorito = await JogoFavorito.findOne({
+      where: { id_usuario, id_jogo }
+    });
+
+    if (jogoFavorito) {
+      return res.status(400).json({ error: 'Este jogo já está na sua lista de favoritos.' });
+    }
+
+    await JogoFavorito.create({
+      id_usuario,
+      id_jogo
+    });
+
+    return res.status(201).json({ message: 'Jogo adicionado aos favoritos com sucesso.' });
+  } catch (error) {
+    console.error('Erro ao adicionar jogo aos favoritos:', error);
+    return res.status(500).json({ error: 'Erro ao adicionar jogo aos favoritos.' });
+  }
+};
+
+exports.getJogosFavoritos = async (req, res) => {
+  const { id } = req.params;  // Obtém o ID do usuário a partir dos parâmetros da URL
+
+  try {
+    // Busca todos os registros de favoritos para o usuário específico
+    const jogosFavoritos = await JogoFavorito.findAll({
+      where: { id },
+      include: [{
+        model: Jogo,  // Relaciona com o modelo Jogo
+        attributes: ['id', 'nome', 'descricao'],  // Atributos do jogo que queremos retornar
+      }],
+    });
+
+    // Verifica se o usuário tem jogos favoritos
+    if (jogosFavoritos.length === 0) {
+      return res.status(404).json({ message: 'Nenhum jogo favorito encontrado para esse usuário.' });
+    }
+
+    // Retorna a lista de jogos favoritos
+    return res.status(200).json(jogosFavoritos);
+  } catch (error) {
+    console.error('Erro ao listar jogos favoritos:', error);
+    return res.status(500).json({ message: 'Erro ao listar jogos favoritos.' });
   }
 };

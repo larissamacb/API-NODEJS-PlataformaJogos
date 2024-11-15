@@ -1,8 +1,8 @@
 const { DataTypes } = require('sequelize');
-const sequelize = require('../config/geral_database');
+const { geralDB } = require('../config/databases');
 const TipoPagamento = require('./tipoPagamento');
 
-const FormaPagamento = sequelize.define('FormaPagamento', {
+const FormaPagamento = geralDB.define('FormaPagamento', {
   id: {
     type: DataTypes.INTEGER,
     primaryKey: true,
@@ -32,5 +32,7 @@ const FormaPagamento = sequelize.define('FormaPagamento', {
   tableName: 'forma_pagamento',
   timestamps: false,
 });
+
+FormaPagamento.belongsTo(TipoPagamento, { foreignKey: 'id_tipo_pagamento' });
 
 module.exports = FormaPagamento;

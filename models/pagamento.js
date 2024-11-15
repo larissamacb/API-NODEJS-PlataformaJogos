@@ -1,9 +1,11 @@
 const { DataTypes } = require('sequelize');
-const sequelize = require('../config/geral_database');
+const { geralDB } = require('../config/databases');
 const FormaPagamento = require('./formaPagamento');
 const TipoPagamento = require('./tipoPagamento');
+const Usuario = require('./usuario');
+const Plano = require('./plano');
 
-const Pagamento = sequelize.define('Pagamento', {
+const Pagamento = geralDB.define('Pagamento', {
   id: {
     type: DataTypes.INTEGER,
     primaryKey: true,
@@ -27,6 +29,17 @@ const Pagamento = sequelize.define('Pagamento', {
       key: 'id',
     },
   },
+  id_plano: {
+    type: DataTypes.INTEGER,
+    references: {
+      model: Plano,
+      key: 'id',
+    },
+  },
+  valor: {
+    type: DataTypes.DECIMAL(10, 2),
+    allowNull: false,
+  },
   data_pagamento: {
     type: DataTypes.DATE,
     defaultValue: DataTypes.NOW,
@@ -35,5 +48,10 @@ const Pagamento = sequelize.define('Pagamento', {
   tableName: 'pagamento',
   timestamps: false,
 });
+
+Pagamento.belongsTo(Usuario, { foreignKey: 'id_usuario' });
+Pagamento.belongsTo(FormaPagamento, { foreignKey: 'id_forma_pagamento' });
+Pagamento.belongsTo(TipoPagamento, { foreignKey: 'id_tipo_pagamento' });
+Pagamento.belongsTo(Plano, { foreignKey: 'id_plano' });
 
 module.exports = Pagamento;

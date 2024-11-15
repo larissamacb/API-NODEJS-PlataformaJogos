@@ -14,6 +14,9 @@ const Plano = geralDB.define('Plano', {
   descricao: {
     type: DataTypes.TEXT,
   },
+  mensalidade: {
+    type: DataTypes.DECIMAL(10, 2),
+  },
 }, {
   tableName: 'plano',
   timestamps: false,

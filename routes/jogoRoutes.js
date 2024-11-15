@@ -29,4 +29,14 @@ router.get('/alfabetica', jogoController.getJogosByOrdem);
 // Filtro pelo nome do plano. Deve ter a acentuação correta, mas não é case sensitive
 router.get('/plano/:nome', jogoController.getJogosByPlano);
 
+/*
+{
+  "id_usuario": 7,
+  "id_jogo": 1
+}
+*/
+router.post('/favorito', jogoController.adicionarFavorito);
+
+router.get('/favorito/:id', jogoController.getJogosFavoritos);
+
 module.exports = router;

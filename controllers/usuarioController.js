@@ -66,7 +66,7 @@ exports.loginUsuario = async (req, res) => {
 
 exports.atualizarUsuario = async (req, res) => {
   const { id } = req.params;
-  const { nome, novoIdentificador, email, data_nascimento, id_foto_perfil } = req.body;
+  const { nome, identificador, email } = req.body;
 
   try {
     const usuario = await Usuario.findOne({ where: { id } });
@@ -76,10 +76,8 @@ exports.atualizarUsuario = async (req, res) => {
     }
 
     usuario.nome = nome || usuario.nome;
-    usuario.identificador = novoIdentificador || usuario.identificador;
+    usuario.identificador = identificador || usuario.identificador;
     usuario.email = email || usuario.email;
-    usuario.data_nascimento = data_nascimento || usuario.data_nascimento;
-    usuario.id_foto_perfil = id_foto_perfil || usuario.id_foto_perfil;
 
     await usuario.save();
 
@@ -112,12 +110,14 @@ exports.atualizarSenha = async (req, res) => {
 
     await usuario.save();
 
+    console.log(`Senha atualizada para o usuário ${id}`);
     res.status(200).json({ message: 'Senha atualizada com sucesso' });
   } catch (error) {
-    console.error(error);
+    console.error('Erro ao atualizar senha:', error);
     res.status(500).json({ message: 'Erro ao alterar a senha', error });
   }
 };
+
 
 exports.deletarUsuario = async (req, res) => {
   const { id } = req.params;

@@ -23,7 +23,7 @@ const MidiaJogo = jogosDB.define('Midia_Jogo', {
     },
   },
   filedata: {
-    type: DataTypes.BLOB,
+    type: DataTypes.BLOB('long'),
     allowNull: false,
   },
 }, {
