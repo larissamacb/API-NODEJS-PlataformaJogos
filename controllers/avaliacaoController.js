@@ -23,7 +23,7 @@ exports.getAllAvaliacoesByJogoId = async (req, res) => {
               {
                   model: FotoPerfil,
                   as: 'Foto_Perfil',
-                  attributes: ['url']
+                  attributes: ['filedata']
               }
           ]
       });
@@ -31,7 +31,7 @@ exports.getAllAvaliacoesByJogoId = async (req, res) => {
       const usuarioMap = usuarios.reduce((acc, usuario) => {
           acc[usuario.id] = {
               identificador: usuario.identificador,
-              fotoPerfilUrl: usuario.Foto_Perfil ? usuario.Foto_Perfil.url : null
+              fotoPerfilUrl: usuario.Foto_Perfil ? usuario.Foto_Perfil.filedata : null
           };
           return acc;
       }, {});
@@ -58,7 +58,6 @@ exports.getAvaliacoesByUsuarioId = async (req, res) => {
   const { id } = req.params;
 
   try {
-    // Busca as avaliações do usuário e inclui o nome do jogo
     const avaliacoes = await Avaliacao.findAll({
       where: {
         id_usuario: id
@@ -67,7 +66,7 @@ exports.getAvaliacoesByUsuarioId = async (req, res) => {
       include: [
         {
           model: Jogo,
-          attributes: ['nome'], // Nome do jogo
+          attributes: ['nome'],
         }
       ]
     });
@@ -76,19 +75,17 @@ exports.getAvaliacoesByUsuarioId = async (req, res) => {
       return res.status(404).json({ message: 'Nenhuma avaliação encontrada para este usuário.' });
     }
 
-    // Busca o nome e o identificador do usuário no banco loginDB
     const usuario = await Usuario.findOne({
       where: {
         id: id
       },
-      attributes: ['nome', 'identificador'] // Nome e identificador do usuário
+      attributes: ['nome', 'identificador']
     });
 
     if (!usuario) {
       return res.status(404).json({ message: 'Usuário não encontrado.' });
     }
 
-    // Formata a resposta incluindo o nome do jogo e os dados do usuário
     const avaliacoesComNomes = avaliacoes.map(avaliacao => ({
       id: avaliacao.id,
       nome_usuario: usuario.nome,

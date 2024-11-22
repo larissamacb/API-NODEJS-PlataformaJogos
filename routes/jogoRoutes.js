@@ -37,6 +37,6 @@ router.get('/plano/:nome', jogoController.getJogosByPlano);
 */
 router.post('/favorito', jogoController.adicionarFavorito);
 
-router.get('/favorito/:id', jogoController.getJogosFavoritos);
+router.get('/favoritos/:id', jogoController.getJogosFavoritos);
 
 module.exports = router;

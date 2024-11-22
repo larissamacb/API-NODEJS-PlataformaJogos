@@ -24,13 +24,38 @@ exports.criarUsuario = async (req, res) => {
     }
 };
 
-exports.consultarUsuario = async (req, res) => {
+exports.consultarUsuarioPorId = async (req, res) => {
   const { id } = req.params;
 
   try {
     const usuario = await Usuario.findOne({ where: { id } });
 
     if (!usuario) {
+      return res.status(404).json({ message: 'Usuário não encontrado' });
+    }
+
+    res.status(200).json(usuario);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Erro ao buscar usuário', error });
+  }
+};
+
+const { Op } = require('sequelize');
+
+exports.consultarUsuarioPorUsername = async (req, res) => {
+  const { username } = req.params;
+
+  try {
+    const usuario = await Usuario.findAll({
+      where: {
+        identificador: {
+          [Op.iLike]: `${username}%`, // Busca parcial (contém a sequência)
+        },
+      },
+    });
+
+    if (usuario.length === 0) {
       return res.status(404).json({ message: 'Usuário não encontrado' });
     }
 
@@ -117,7 +142,6 @@ exports.atualizarSenha = async (req, res) => {
     res.status(500).json({ message: 'Erro ao alterar a senha', error });
   }
 };
-
 
 exports.deletarUsuario = async (req, res) => {
   const { id } = req.params;

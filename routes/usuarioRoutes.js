@@ -23,8 +23,11 @@ router.post('/', usuarioController.criarUsuario);
 // Pede identificador/username e senha
 router.post('/login', usuarioController.loginUsuario);
 
+// Rota para consultar um usuário pelo id
+router.get('/:id', usuarioController.consultarUsuarioPorId);
+
 // Rota para consultar um usuário pelo identificador (username)
-router.get('/:id', usuarioController.consultarUsuario);
+router.get('/user/:username', usuarioController.consultarUsuarioPorUsername);
 
 /* Rota para atualizar informações do usuário 
 (nome, identificador, email, data de nascimento, foto de perfil)

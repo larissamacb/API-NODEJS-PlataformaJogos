@@ -6,9 +6,15 @@ const fotoPerfilController = require('../controllers/fotoPerfilController');
 const storage = multer.memoryStorage();
 const upload = multer({ storage: storage });
 
+router.get('/', fotoPerfilController.getAllFotoPerfil);
+
 router.get('/usuario/:id', fotoPerfilController.getFotoPerfilByUsuarioId);
 
 // Rota para upload da foto de perfil
-router.post('/upload/foto-perfil', upload.single('foto'), fotoPerfilController.uploadFotoPerfil);
+router.post('/upload/:id', upload.single('foto'), fotoPerfilController.uploadFotoPerfil);
+
+router.delete('/:id', fotoPerfilController.deletarFotoPerfil);
+
+router.put('/atualizar/:id', fotoPerfilController.atualizarFotoPerfil);
 
 module.exports = router;

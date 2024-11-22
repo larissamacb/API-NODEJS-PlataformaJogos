@@ -4,6 +4,7 @@ const InfoJogos = require('../models/viewInfoJogos');
 const Jogo = require('../models/jogo');
 const Usuario = require('../models/usuario');
 const JogoFavorito = require('../models/jogoFavorito');
+const MidiaJogo = require('../models/midiaJogo');
 
 const { Op } = require('sequelize');
 const { jogosDB } = require('../config/databases');
@@ -170,27 +171,40 @@ exports.adicionarFavorito = async (req, res) => {
 };
 
 exports.getJogosFavoritos = async (req, res) => {
-  const { id } = req.params;  // Obtém o ID do usuário a partir dos parâmetros da URL
+  const { id } = req.params;
 
   try {
-    // Busca todos os registros de favoritos para o usuário específico
-    const jogosFavoritos = await JogoFavorito.findAll({
-      where: { id },
-      include: [{
-        model: Jogo,  // Relaciona com o modelo Jogo
-        attributes: ['id', 'nome', 'descricao'],  // Atributos do jogo que queremos retornar
-      }],
+    const favoritos = await JogoFavorito.findAll({
+      where: { id_usuario: id },
+      attributes: ['id_jogo'],
     });
 
-    // Verifica se o usuário tem jogos favoritos
-    if (jogosFavoritos.length === 0) {
+    const idsJogos = favoritos.map((fav) => fav.id_jogo);
+
+    if (idsJogos.length === 0) {
       return res.status(404).json({ message: 'Nenhum jogo favorito encontrado para esse usuário.' });
     }
 
-    // Retorna a lista de jogos favoritos
-    return res.status(200).json(jogosFavoritos);
+    const jogosInfo = await InfoJogos.findAll({
+      where: {
+        jogo_id: idsJogos,
+      },
+      attributes: [
+        'jogo_id',
+        'nome_jogo',
+        'data_lancamento',
+        'classificacao_etaria',
+        'descricao',
+        'avaliacao_media',
+        'foto_id',
+        'video_id',
+        'generos',
+      ],
+    });
+
+    return res.status(200).json(jogosInfo);
   } catch (error) {
     console.error('Erro ao listar jogos favoritos:', error);
-    return res.status(500).json({ message: 'Erro ao listar jogos favoritos.' });
+    return res.status(500).json({ message: 'Erro ao listar jogos favoritos.', error });
   }
 };
