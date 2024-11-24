@@ -53,6 +53,8 @@ Exemplo:
 */
 router.put('/:id/senha', usuarioController.atualizarSenha);
 
+router.post('/logout', usuarioController.logoutUsuario)
+
 /* Rota para deletar um usuário (com verificação de senha)
 Exemplo:
 {

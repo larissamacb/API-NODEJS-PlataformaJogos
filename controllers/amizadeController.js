@@ -127,6 +127,7 @@ exports.responderSolicitacao = async (req, res) => {
   const { id } = req.params;
   const { status } = req.body;
 
+  // Verifica se o status é válido
   if (!['aceito', 'rejeitado'].includes(status)) {
     return res.status(400).json({ message: 'Status inválido. Utilize "aceito" ou "rejeitado".' });
   }
@@ -134,10 +135,17 @@ exports.responderSolicitacao = async (req, res) => {
   try {
     const solicitacao = await SolicitacaoAmizade.findByPk(id);
 
+    // Verifica se a solicitação existe
     if (!solicitacao) {
       return res.status(404).json({ message: 'Solicitação de amizade não encontrada.' });
     }
 
+    // Verifica se a solicitação já foi respondida
+    if (solicitacao.status === 'aceito' || solicitacao.status === 'rejeitado') {
+      return res.status(400).json({ message: 'Esta solicitação já foi respondida.' });
+    }
+
+    // Atualiza o status da solicitação
     solicitacao.status = status;
     await solicitacao.save();
 
@@ -147,6 +155,7 @@ exports.responderSolicitacao = async (req, res) => {
     res.status(500).json({ message: 'Erro ao atualizar solicitação de amizade', error });
   }
 };
+
 
 exports.verificarAmizade = async (req, res) => {
   const { id_usuario1, id_usuario2 } = req.params;
@@ -169,5 +178,31 @@ exports.verificarAmizade = async (req, res) => {
   } catch (error) {
     console.error(error);
     return res.status(500).json({ message: 'Erro ao verificar amizade', error });
+  }
+};
+
+exports.verificarPendencia = async (req, res) => {
+  const { id_usuario1, id_usuario2 } = req.params;
+
+  try {
+    // Verificar se há uma solicitação pendente
+    const solicitacaoPendente = await SolicitacaoAmizade.findOne({
+      where: {
+        [Op.or]: [
+          { id_usuario_solicitante: id_usuario1, id_usuario_destinatario: id_usuario2, status: 'pendente' },
+          { id_usuario_solicitante: id_usuario2, id_usuario_destinatario: id_usuario1, status: 'pendente' }
+        ]
+      }
+    });
+
+    if (solicitacaoPendente) {
+      return res.json({ solicitacaoPendente: true });
+    } else {
+      return res.json({ solicitacaoPendente: false });
+    }
+
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ message: 'Erro ao verificar solicitação pendente', error });
   }
 };

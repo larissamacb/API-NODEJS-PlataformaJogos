@@ -111,7 +111,7 @@ exports.deletarFotoPerfil = async (req, res) => {
 
 exports.atualizarFotoPerfil = async (req, res) => {
     const { id } = req.params;
-    const { id_foto_perfil } = req.body;  // Recebe o id da foto de perfil a ser atribuída
+    const { id_foto_perfil } = req.body;
 
     if (!id_foto_perfil) {
         return res.status(400).json({ message: 'O ID da foto de perfil é necessário.' });

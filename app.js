@@ -13,6 +13,14 @@ const dispositivoRoutes = require('./routes/dispositivoRoutes');
 const cors = require('cors')
 const app = express();
 
+const session = require('express-session');
+app.use(session({
+  secret: 'chave secreta',
+  resave: false,
+  saveUninitialized: true,
+  cookie: { secure: false } 
+}));
+
 app.use(cors());
 app.use(express.json());
 
@@ -45,4 +53,12 @@ app.use('/dispositivos', dispositivoRoutes)
 const PORT = 3000;
 app.listen(PORT, () => {
     console.log(`Servidor rodando na porta ${PORT}`);
+});
+
+app.get('/usuario/logado', (req, res) => {
+  if (req.session.idUsuario) {
+    return res.status(200).json({ idUsuario: req.session.idUsuario });
+  } else {
+    return res.status(401).json({ message: 'Usuário não está logado' });
+  }
 });

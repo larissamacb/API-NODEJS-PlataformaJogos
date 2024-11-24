@@ -31,4 +31,6 @@ router.put('/:id/responder', amizadeController.responderSolicitacao);
 
 router.get('/verificar/:id_usuario1/:id_usuario2', amizadeController.verificarAmizade);
 
+router.get('/verificar-pendente/:id_usuario1/:id_usuario2', amizadeController.verificarPendencia);
+
 module.exports = router;

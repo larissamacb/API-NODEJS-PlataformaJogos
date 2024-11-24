@@ -81,6 +81,8 @@ exports.loginUsuario = async (req, res) => {
       return res.status(403).json({ message: 'Senha incorreta' });
     }
 
+    req.session.idUsuario = usuario.id;
+
     res.status(200).json({ message: 'Login bem-sucedido', usuario });
   } catch (error) {
     console.error(error);
@@ -185,6 +187,17 @@ exports.atualizarSenha = async (req, res) => {
     res.status(500).json({ message: 'Erro ao alterar a senha', error });
   }
 };
+
+exports.logoutUsuario = async (req, res) => {
+  req.session.destroy((err) => {
+    if (err) {
+      return res.status(500).send('Erro ao deslogar');
+    }
+
+    res.status(200).send('Deslogado com sucesso');
+  });
+};
+
 
 exports.deletarUsuario = async (req, res) => {
   const { id } = req.params;
