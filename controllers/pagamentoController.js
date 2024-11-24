@@ -89,11 +89,18 @@ exports.deletarFormaPagamento = async (req, res) => {
     }
 };
 
+/* Exemplo de requisição
+{
+  "id_usuario": 1,
+  "id_forma_pagamento": 2,
+  "id_plano": 3,
+  "id_tipo_pagamento": null
+}
+*/
 exports.criarPagamento = async (req, res) => {
     const { id_usuario, id_forma_pagamento, id_plano, id_tipo_pagamento } = req.body;
   
     try {
-      // Buscar o usuário no banco de dados `loginDB`
       const usuario = await Usuario.findOne({
         where: { id: id_usuario },
         attributes: ['id'],
@@ -173,7 +180,7 @@ exports.getPagamentosByUsuarioId = async (req, res) => {
           },
           {
             model: FormaPagamento,
-            attributes: ['numero_cartao', 'nome_no_cartao'],
+            attributes: ['numero_cartao', 'nome_no_cartao', 'validade'],
             required: false,
           },
           {
@@ -193,6 +200,7 @@ exports.getPagamentosByUsuarioId = async (req, res) => {
         forma_pagamento: pagamento.FormaPagamento ? {
           numero_cartao: pagamento.FormaPagamento.numero_cartao,
           nome_no_cartao: pagamento.FormaPagamento.nome_no_cartao,
+          validade: pagamento.FormaPagamento.validade,
         } : null,
         data_pagamento: pagamento.data_pagamento,
         nome_plano: pagamento.Plano ? pagamento.Plano.nome : null,

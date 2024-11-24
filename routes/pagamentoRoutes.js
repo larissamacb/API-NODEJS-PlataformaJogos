@@ -11,15 +11,18 @@ Exemplo de requisição:
   "id_tipo_pagamento": 5,
   "numero_cartao": "1234567812345678",
   "nome_no_cartao": "João Paulo",
-  "cvv": "321"
+  "cvv": "321",
+  "validade": "03/27"
 } 
 */
 router.post('/novaforma', pagamentoController.cadastrarFormaPagamento);
 
+// Deleta uma forma de pagamento pelo id dela
 router.delete('/forma/delete/:id', pagamentoController.deletarFormaPagamento);
 
 router.post('/', pagamentoController.criarPagamento);
 
+// Pega informações de todos os pagamentos de um usuário pelo id dele
 router.get('/:id', pagamentoController.getPagamentosByUsuarioId);
 
 module.exports = router;
