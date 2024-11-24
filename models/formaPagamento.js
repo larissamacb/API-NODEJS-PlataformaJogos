@@ -28,6 +28,9 @@ const FormaPagamento = geralDB.define('FormaPagamento', {
   cvv: {
     type: DataTypes.STRING(3),
   },
+  validade: {
+    type: DataTypes.DATE,
+  },
 }, {
   tableName: 'forma_pagamento',
   timestamps: false,

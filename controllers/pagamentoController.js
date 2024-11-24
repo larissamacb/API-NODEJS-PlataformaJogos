@@ -14,7 +14,7 @@ exports.getFormasPagamentoByUsuarioId = async (req, res) => {
         where: {
           id_usuario: id
         },
-        attributes: ['id', 'numero_cartao', 'nome_no_cartao', 'cvv', 'id_tipo_pagamento'],
+        attributes: ['id', 'numero_cartao', 'nome_no_cartao', 'cvv', 'validade', 'id_tipo_pagamento'],
         include: [
           {
             model: TipoPagamento,
@@ -28,13 +28,13 @@ exports.getFormasPagamentoByUsuarioId = async (req, res) => {
         return res.status(404).json({ message: 'Nenhuma forma de pagamento encontrada para este usuário.' });
       }
   
-      // Formata a resposta incluindo as formas de pagamento e o tipo de pagamento
       const formasPagamentoComTipo = formasPagamento.map(forma => ({
         id: forma.id,
         numero_cartao: forma.numero_cartao,
         nome_no_cartao: forma.nome_no_cartao,
-        tipo_pagamento: forma.TipoPagamento.tipo, // Crédito ou Débito
+        tipo_pagamento: forma.TipoPagamento.tipo,
         cvv: forma.cvv,
+        validade: forma.validade,
       }));
   
       res.status(200).json(formasPagamentoComTipo);
@@ -45,7 +45,7 @@ exports.getFormasPagamentoByUsuarioId = async (req, res) => {
 };
 
 exports.cadastrarFormaPagamento = async (req, res) => {
-  const { id_usuario, id_tipo_pagamento, numero_cartao, nome_no_cartao, cvv } = req.body;
+  const { id_usuario, id_tipo_pagamento, numero_cartao, nome_no_cartao, cvv, validade } = req.body;
 
   try {
     const tipoPagamento = await TipoPagamento.findByPk(id_tipo_pagamento);
@@ -59,7 +59,8 @@ exports.cadastrarFormaPagamento = async (req, res) => {
       id_tipo_pagamento,
       numero_cartao,
       nome_no_cartao,
-      cvv
+      cvv,
+      validade
     });
 
     res.status(201).json({ message: 'Forma de pagamento cadastrada com sucesso', formaPagamento });
@@ -105,7 +106,6 @@ exports.criarPagamento = async (req, res) => {
   
       let tipoPagamentoId = id_tipo_pagamento;
   
-      // Verificar se a forma de pagamento foi fornecida
       if (id_forma_pagamento) {
         const formaPagamento = await FormaPagamento.findOne({
           where: { id: id_forma_pagamento },
@@ -121,7 +121,6 @@ exports.criarPagamento = async (req, res) => {
           return res.status(404).json({ message: 'Forma de pagamento não encontrada.' });
         }
   
-        // Obter o tipo de pagamento automaticamente da forma de pagamento
         tipoPagamentoId = formaPagamento.TipoPagamento?.id;
   
         if (!tipoPagamentoId) {
@@ -129,12 +128,10 @@ exports.criarPagamento = async (req, res) => {
         }
       }
   
-      // Se não houver `id_forma_pagamento`, verificar se `id_tipo_pagamento` foi enviado
       if (!tipoPagamentoId) {
         return res.status(400).json({ message: 'Tipo de pagamento deve ser fornecido se a forma de pagamento não for informada.' });
       }
   
-      // Buscar o plano e obter o valor da mensalidade
       const plano = await Plano.findByPk(id_plano);
       if (!plano) {
         return res.status(404).json({ message: 'Plano não encontrado.' });
@@ -142,7 +139,6 @@ exports.criarPagamento = async (req, res) => {
   
       const valor = plano.mensalidade;
   
-      // Criar o pagamento no `geralDB`
       const pagamento = await Pagamento.create({
         id_usuario,
         id_forma_pagamento,
@@ -162,28 +158,27 @@ exports.criarPagamento = async (req, res) => {
 };
 
 exports.getPagamentosByUsuarioId = async (req, res) => {
-    const { id } = req.params;  // id do usuário
+    const { id } = req.params; 
   
     try {
-      // Buscar os pagamentos do usuário, ordenados do mais recente para o mais antigo
       const pagamentos = await Pagamento.findAll({
         where: {
-          id_usuario: id,  // Filtra pelos pagamentos do usuário
+          id_usuario: id, 
         },
-        order: [['data_pagamento', 'DESC']],  // Ordena pela data do pagamento
+        order: [['data_pagamento', 'DESC']],
         include: [
           {
             model: TipoPagamento,
-            attributes: ['tipo'],  // Tipo de pagamento (Crédito, Débito, PIX, Boleto)
+            attributes: ['tipo'],
           },
           {
             model: FormaPagamento,
-            attributes: ['numero_cartao', 'nome_no_cartao'],  // Apenas o número e o nome no cartão
-            required: false,  // Forma de pagamento pode ser nula
+            attributes: ['numero_cartao', 'nome_no_cartao'],
+            required: false,
           },
           {
             model: Plano,
-            attributes: ['nome'],  // Nome do plano pago
+            attributes: ['nome'], 
           },
         ],
       });
@@ -192,17 +187,16 @@ exports.getPagamentosByUsuarioId = async (req, res) => {
         return res.status(404).json({ message: 'Nenhum pagamento encontrado para este usuário.' });
       }
   
-      // Formatação dos pagamentos
       const pagamentosFormatados = pagamentos.map(pagamento => ({
         id: pagamento.id,
         tipo_pagamento: pagamento.TipoPagamento ? pagamento.TipoPagamento.tipo : null,  // Tipo de pagamento
         forma_pagamento: pagamento.FormaPagamento ? {
           numero_cartao: pagamento.FormaPagamento.numero_cartao,
           nome_no_cartao: pagamento.FormaPagamento.nome_no_cartao,
-        } : null,  // Forma de pagamento, se houver
+        } : null,
         data_pagamento: pagamento.data_pagamento,
-        nome_plano: pagamento.Plano ? pagamento.Plano.nome : null,  // Nome do plano pago
-        valor: pagamento.valor,  // Valor pago
+        nome_plano: pagamento.Plano ? pagamento.Plano.nome : null,
+        valor: pagamento.valor,
       }));
   
       res.status(200).json(pagamentosFormatados);
