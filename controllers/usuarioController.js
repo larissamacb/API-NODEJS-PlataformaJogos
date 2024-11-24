@@ -1,5 +1,6 @@
 const bcrypt = require('bcrypt');
 const Usuario = require('../models/usuario');
+const { Op } = require('sequelize');
 
 exports.criarUsuario = async (req, res) => {
     const { nome, identificador, senha, email, data_nascimento } = req.body;
@@ -41,8 +42,6 @@ exports.consultarUsuarioPorId = async (req, res) => {
   }
 };
 
-const { Op } = require('sequelize');
-
 exports.consultarUsuarioPorUsername = async (req, res) => {
   const { username } = req.params;
 
@@ -50,7 +49,7 @@ exports.consultarUsuarioPorUsername = async (req, res) => {
     const usuario = await Usuario.findAll({
       where: {
         identificador: {
-          [Op.iLike]: `${username}%`, // Busca parcial (contém a sequência)
+          [Op.iLike]: `${username}%`,
         },
       },
     });
@@ -110,6 +109,50 @@ exports.atualizarUsuario = async (req, res) => {
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: 'Erro ao atualizar usuário', error });
+  }
+};
+
+exports.verificarUsername = async (req, res) => {
+  try {
+      const { username, id } = req.params;
+
+      if (!username) {
+          return res.status(400).json({ error: 'O username é obrigatório.' });
+      }
+
+      const usuarioExiste = await Usuario.findOne({
+          where: {
+              identificador: username,
+              ...(id && { id: { [Op.ne]: id } })
+          }
+      });
+
+      return res.status(200).json({ usernameExiste: !!usuarioExiste });
+  } catch (error) {
+      console.error('Erro ao verificar username:', error);
+      return res.status(500).json({ error: 'Erro interno do servidor.' });
+  }
+};
+
+exports.verificarEmail = async (req, res) => {
+  try {
+      const { email, id } = req.params;
+
+      if (!email) {
+          return res.status(400).json({ error: 'O email é obrigatório.' });
+      }
+
+      const usuarioExiste = await Usuario.findOne({
+          where: {
+              email: email,
+              ...(id && { id: { [Op.ne]: id } })
+          }
+      });
+
+      return res.status(200).json({ emailExiste: !!usuarioExiste });
+  } catch (error) {
+      console.error('Erro ao verificar email:', error);
+      return res.status(500).json({ error: 'Erro interno do servidor.' });
   }
 };
 

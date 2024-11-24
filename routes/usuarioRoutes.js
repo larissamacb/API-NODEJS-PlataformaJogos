@@ -40,6 +40,10 @@ Exemplo:
 */
 router.put('/:id', usuarioController.atualizarUsuario);
 
+router.get('/verificar-username/:username/:id', usuarioController.verificarUsername);
+
+router.get('/verificar-email/:email/:id', usuarioController.verificarEmail);
+
 /* Rota específica para atualizar a senha do usuário
 Exemplo:
 {
