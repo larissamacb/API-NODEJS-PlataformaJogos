@@ -98,71 +98,80 @@ exports.deletarFormaPagamento = async (req, res) => {
 }
 */
 exports.criarPagamento = async (req, res) => {
-    const { id_usuario, id_forma_pagamento, id_plano, id_tipo_pagamento } = req.body;
-  
-    try {
+  const { id_usuario, id_forma_pagamento, id_plano, id_tipo_pagamento } = req.body;
+
+  try {
       const usuario = await Usuario.findOne({
-        where: { id: id_usuario },
-        attributes: ['id'],
-        sequelize: loginDB,
+          where: { id: id_usuario },
+          attributes: ['id'],
+          sequelize: loginDB,
       });
-  
+
       if (!usuario) {
-        return res.status(404).json({ message: 'Usuário não encontrado.' });
+          return res.status(404).json({ message: 'Usuário não encontrado.' });
       }
-  
+
       let tipoPagamentoId = id_tipo_pagamento;
-  
+
       if (id_forma_pagamento) {
-        const formaPagamento = await FormaPagamento.findOne({
-          where: { id: id_forma_pagamento },
-          include: [
-            {
-              model: TipoPagamento,
-              attributes: ['id', 'tipo'],
-            },
-          ],
-        });
-  
-        if (!formaPagamento) {
-          return res.status(404).json({ message: 'Forma de pagamento não encontrada.' });
-        }
-  
-        tipoPagamentoId = formaPagamento.TipoPagamento?.id;
-  
-        if (!tipoPagamentoId) {
-          return res.status(404).json({ message: 'Tipo de pagamento associado não encontrado.' });
-        }
+          const formaPagamento = await FormaPagamento.findOne({
+              where: { id: id_forma_pagamento },
+              include: [
+                  {
+                      model: TipoPagamento,
+                      attributes: ['id', 'tipo'],
+                  },
+              ],
+          });
+
+          if (!formaPagamento) {
+              return res.status(404).json({ message: 'Forma de pagamento não encontrada.' });
+          }
+
+          tipoPagamentoId = formaPagamento.TipoPagamento?.id;
+
+          if (!tipoPagamentoId) {
+              return res.status(404).json({ message: 'Tipo de pagamento associado não encontrado.' });
+          }
       }
-  
+
       if (!tipoPagamentoId) {
-        return res.status(400).json({ message: 'Tipo de pagamento deve ser fornecido se a forma de pagamento não for informada.' });
+          return res.status(400).json({ message: 'Tipo de pagamento deve ser fornecido se a forma de pagamento não for informada.' });
       }
-  
+
       const plano = await Plano.findByPk(id_plano);
       if (!plano) {
-        return res.status(404).json({ message: 'Plano não encontrado.' });
+          return res.status(404).json({ message: 'Plano não encontrado.' });
       }
-  
+
       const valor = plano.mensalidade;
-  
+
+      // Definindo a data atual
+      const agora = new Date();
+
+      // Formatando a data para "YYYY-MM-DD"
+      const dataPagamento = agora.toISOString().split('T')[0];
+
+      // Criando o pagamento com a data formatada
       const pagamento = await Pagamento.create({
-        id_usuario,
-        id_forma_pagamento,
-        id_tipo_pagamento: tipoPagamentoId,
-        id_plano,
-        valor,
+          id_usuario,
+          id_forma_pagamento,
+          id_tipo_pagamento: tipoPagamentoId,
+          id_plano,
+          valor,
+          data_pagamento: dataPagamento,  // Aqui usamos a data formatada
       });
-  
+
       res.status(201).json({
-        message: 'Pagamento criado com sucesso.',
-        pagamento,
+          message: 'Pagamento criado com sucesso.',
+          pagamento,
       });
-    } catch (error) {
+  } catch (error) {
       console.error('Erro ao criar pagamento:', error);
       res.status(500).json({ message: 'Erro ao criar pagamento', error: error.message });
-    }
+  }
 };
+
 
 exports.getPagamentosByUsuarioId = async (req, res) => {
     const { id } = req.params; 

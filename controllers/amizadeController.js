@@ -148,4 +148,26 @@ exports.responderSolicitacao = async (req, res) => {
   }
 };
 
+exports.verificarAmizade = async (req, res) => {
+  const { id_usuario1, id_usuario2 } = req.params;
 
+  try {
+    const amizadeExistente = await Amizade.findOne({
+      where: {
+        [Op.or]: [
+          { id_usuario1, id_usuario2 },
+          { id_usuario1: id_usuario2, id_usuario2: id_usuario1 }
+        ]
+      }
+    });
+
+    if (amizadeExistente) {
+      return res.json({ saoAmigos: true });
+    } else {
+      return res.json({ saoAmigos: false });
+    }
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ message: 'Erro ao verificar amizade', error });
+  }
+};

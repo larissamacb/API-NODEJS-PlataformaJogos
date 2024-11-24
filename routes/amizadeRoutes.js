@@ -29,4 +29,6 @@ Exemplo:
 */
 router.put('/:id/responder', amizadeController.responderSolicitacao);
 
+router.get('/verificar/:id_usuario1/:id_usuario2', amizadeController.verificarAmizade);
+
 module.exports = router;

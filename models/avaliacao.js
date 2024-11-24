@@ -13,16 +13,16 @@ const Avaliacao = jogosDB.define('Avaliacao', {
         type: DataTypes.INTEGER,
         allowNull: false,
         references: {
-            model: Usuario, // Referência para o modelo Usuario
-            key: 'id' // Chave primária na tabela Usuario
+            model: Usuario,
+            key: 'id'
         }
     },
     id_jogo: {
         type: DataTypes.INTEGER,
         allowNull: false,
         references: {
-            model: Jogo, // Referência para o modelo Jogo
-            key: 'id' // Chave primária na tabela Jogo
+            model: Jogo,
+            key: 'id'
         }
     },
     nota: {
@@ -49,7 +49,6 @@ const Avaliacao = jogosDB.define('Avaliacao', {
     timestamps: false,
 });
 
-// Define as associações
 Avaliacao.belongsTo(Usuario, { foreignKey: 'id_usuario' });
 Avaliacao.belongsTo(Jogo, { foreignKey: 'id_jogo' });
 
