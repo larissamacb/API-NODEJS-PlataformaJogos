@@ -66,10 +66,10 @@ exports.consultarUsuarioPorUsername = async (req, res) => {
 };
 
 exports.loginUsuario = async (req, res) => {
-  const { id, senha } = req.body;
+  const { identificador, senha } = req.body;
 
   try {
-    const usuario = await Usuario.findOne({ where: { id } });
+    const usuario = await Usuario.findOne({ where: { identificador } });
 
     if (!usuario) {
       return res.status(404).json({ message: 'Usuário não encontrado' });

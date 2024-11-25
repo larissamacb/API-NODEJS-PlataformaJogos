@@ -20,6 +20,14 @@ router.post('/novaforma', pagamentoController.cadastrarFormaPagamento);
 // Deleta uma forma de pagamento pelo id dela
 router.delete('/forma/delete/:id', pagamentoController.deletarFormaPagamento);
 
+/* Exemplo de requisição
+{
+  "id_usuario": 1,
+  "id_forma_pagamento": 2,
+  "id_plano": 3,
+  "id_tipo_pagamento": null
+}
+*/
 router.post('/', pagamentoController.criarPagamento);
 
 // Pega informações de todos os pagamentos de um usuário pelo id dele

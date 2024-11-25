@@ -50,6 +50,14 @@ app.use('/pagamentos', pagamentoRoutes);
 app.use('/midias', midiaJogoRoutes)
 app.use('/dispositivos', dispositivoRoutes)
 
+const path = require('path');
+
+app.use(express.static(path.join(__dirname, 'public')));
+
+app.get('/perfil/:id', (req, res) => {
+    res.sendFile(path.join(__dirname, 'public/tela-perfil.html'));
+});
+
 const PORT = 3000;
 app.listen(PORT, () => {
     console.log(`Servidor rodando na porta ${PORT}`);

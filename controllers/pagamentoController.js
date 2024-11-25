@@ -89,14 +89,6 @@ exports.deletarFormaPagamento = async (req, res) => {
     }
 };
 
-/* Exemplo de requisição
-{
-  "id_usuario": 1,
-  "id_forma_pagamento": 2,
-  "id_plano": 3,
-  "id_tipo_pagamento": null
-}
-*/
 exports.criarPagamento = async (req, res) => {
   const { id_usuario, id_forma_pagamento, id_plano, id_tipo_pagamento } = req.body;
 
@@ -146,20 +138,17 @@ exports.criarPagamento = async (req, res) => {
 
       const valor = plano.mensalidade;
 
-      // Definindo a data atual
       const agora = new Date();
 
-      // Formatando a data para "YYYY-MM-DD"
       const dataPagamento = agora.toISOString().split('T')[0];
 
-      // Criando o pagamento com a data formatada
       const pagamento = await Pagamento.create({
           id_usuario,
           id_forma_pagamento,
           id_tipo_pagamento: tipoPagamentoId,
           id_plano,
           valor,
-          data_pagamento: dataPagamento,  // Aqui usamos a data formatada
+          data_pagamento: dataPagamento, 
       });
 
       res.status(201).json({
